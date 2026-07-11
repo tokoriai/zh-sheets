@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>zh-sheets · Chinese practice worksheets</title>
+    <meta name="description" content="Free printable Chinese character worksheets — 田字格 / 米字格 writing grids, stroke-order charts, and in-browser stroke practice. By Tokori." />
+    <meta name="theme-color" content="#ede4d3" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="apple-touch-icon" href="logo.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="zh-sheets · Chinese practice worksheets" />
+    <meta property="og:description" content="Generate printable 汉字 writing sheets and stroke-order charts, or practice strokes right in the browser. Free & open source, by Tokori." />
+    <meta property="og:image" content="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=Ma+Shan+Zheng&family=Long+Cang&family=Liu+Jian+Mao+Cao&family=ZCOOL+XiaoWei&family=ZCOOL+KuaiLe&display=swap"
+      rel="stylesheet"
+    />
+    <!-- LXGW WenKai: open-source 楷体 used when no system Kai font exists
+         (most Linux/Windows machines). Subset per unicode-range, so only
+         the glyphs on the sheet are downloaded. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-regular.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar no-print">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        zh-sheets
+        <small>· <span class="zh">汉字</span> practice worksheets</small>
+      </div>
+      <div class="tabs" role="tablist">
+        <button id="tab-sheet" class="on" role="tab" aria-selected="true">Worksheet</button>
+        <button id="tab-practice" role="tab" aria-selected="false">Practice</button>
+      </div>
+      <div class="spacer"></div>
+      <a
+        class="btn btn-ghost btn-icon"
+        href="https://github.com/tokoriai/zh-sheets"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Source on GitHub"
+        aria-label="Source on GitHub"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      </a>
+      <button id="btn-print" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span class="btn-label">Print PDF</span>
+      </button>
+    </header>
+
+    <main class="shell" id="shell">
+      <aside class="controls no-print" id="controls">
+        <div class="controls-inner">
+          <div class="sidebar-head">
+            <span class="title">Controls</span>
+            <button id="btn-collapse" class="collapse-btn" title="Collapse" aria-label="Collapse sidebar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+          </div>
+
+        <!-- Words section -->
+        <section class="section">
+          <h3><span class="accent">字</span>Words</h3>
+          <div class="row" style="flex-direction: column; align-items: stretch; gap: 6px;">
+            <textarea
+              class="chars"
+              id="input-chars"
+              placeholder="你 好 学 习 …  or  你好, 学习  —  or paste a sentence: 我喜欢学习中文。"
+              spellcheck="false"
+            ></textarea>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-outline btn-sm" id="btn-add">Add to list</button>
+              <button class="btn btn-ghost btn-sm" id="btn-clear">Clear</button>
+            </div>
+          </div>
+
+          <div class="sub-label">Quick add from HSK</div>
+          <div class="hsk-grid" id="hsk-grid"></div>
+          <div class="row" style="margin-top: 10px;">
+            <label>Take first</label>
+            <input type="number" id="hsk-count" min="1" max="200" value="20" />
+            <span class="val">words</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+            <div class="sub-label" style="margin: 0;">Selected <span id="sel-count">(0)</span></div>
+            <button class="btn btn-ghost btn-xs" id="btn-remove-all">Remove all</button>
+          </div>
+          <div class="chips" id="chips"></div>
+        </section>
+
+        <!-- Layout section -->
+        <section class="section">
+          <h3><span class="accent">格</span>Layout</h3>
+
+          <div class="row">
+            <label>Sheet type</label>
+            <div class="seg" id="seg-mode">
+              <button data-v="writing" class="on" title="Writing practice rows">Writing</button>
+              <button data-v="strokes" title="Stroke order reference chart">Strokes</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <label>Grid style</label>
+            <div class="seg" id="seg-grid">
+              <button data-v="mi" class="on" title="米字格">米</button>
+              <button data-v="tian" title="田字格">田</button>
+              <button data-v="hui" title="回字格">回</button>
+              <button data-v="blank" title="Plain box">▢</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <label>Columns</label>
+            <input type="range" id="cols" min="6" max="16" value="10" />
+            <span class="val" id="cols-v">10</span>
+          </div>
+
+          <div class="row">
+            <label>Repeats / word</label>
+            <input type="range" id="reps" min="1" max="20" value="10" />
+            <span class="val" id="reps-v">10</span>
+          </div>
+
+          <div class="toggle-row" style="margin-top: 4px;">
+            <div>
+              <label>Show pinyin above row</label>
+              <div class="sub">Adds a small pinyin + gloss line over each row.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="show-pinyin" checked />
+              <span></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <label>Pinyin inside cells</label>
+              <div class="sub">Tone-marked syllable at the top of each cell.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="show-pinyin-cell" />
+              <span></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <label>Number cells (for tracing)</label>
+              <div class="sub">Numbers 1, 2, 3… in the bottom-right corner.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="show-numbers" />
+              <span></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <label>Stroke order above row</label>
+              <div class="sub">Small stroke-order strip rendered next to the pinyin + meaning.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="show-stroke" />
+              <span></span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Style section -->
+        <section class="section">
+          <h3><span class="accent">体</span>Style</h3>
+
+          <div class="row">
+            <label>Font</label>
+            <select id="font">
+              <option value="kai">楷体 — Kai (learner)</option>
+              <option value="song">宋体 — Song (book)</option>
+              <option value="hei">黑体 — Hei (modern)</option>
+              <option value="ma">毛笔 — Ma Shan Zheng (brush)</option>
+              <option value="long">行楷 — Long Cang (running)</option>
+              <option value="liu">草书 — Liu Jian Mao Cao (cursive)</option>
+              <option value="xiao">小篆 — ZCOOL XiaoWei (formal)</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label>Ghost copies</label>
+            <input type="range" id="ghosts" min="0" max="14" value="3" />
+            <span class="val" id="ghosts-v">3</span>
+          </div>
+
+          <div class="row">
+            <label>Solid copies</label>
+            <input type="range" id="solids" min="0" max="3" value="1" />
+            <span class="val" id="solids-v">1</span>
+          </div>
+
+          <div class="row">
+            <label>Glyph size</label>
+            <input type="range" id="glyph" min="40" max="95" value="72" />
+            <span class="val" id="glyph-v">72%</span>
+          </div>
+
+          <div class="toggle-row" style="margin-top: 6px;">
+            <div>
+              <label>Blank cells at row end</label>
+              <div class="sub">Leftover cells stay empty for freehand writing. Off: they show a faint glyph to trace.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="fill-blanks" checked />
+              <span></span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Print section -->
+        <section class="section">
+          <h3><span class="accent">印</span>Print</h3>
+
+          <div class="toggle-row">
+            <div>
+              <label>Footer on printed page</label>
+              <div class="sub">Tiny wordmark in the bottom-right of every printed sheet.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="print-footer" checked />
+              <span></span>
+            </label>
+          </div>
+
+          <div class="row" id="row-footer-text">
+            <label>Footer text</label>
+            <input type="text" id="print-footer-text" placeholder="tokori.ai" maxlength="80" />
+          </div>
+        </section>
+
+        <button class="btn btn-primary" style="width: 100%; justify-content: center;" id="btn-print2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print as PDF
+        </button>
+        <p style="margin: 10px 0 0; font-size: 11px; color: hsl(var(--muted-foreground)); line-height: 1.5;">
+          Tip: in the browser print dialog, choose <strong>Save as PDF</strong>, margins <strong>None</strong>, and uncheck headers/footers for a clean sheet.
+        </p>
+        </div><!-- /.controls-inner -->
+      </aside>
+
+      <button class="controls-peek no-print" id="btn-peek" title="Open sidebar" aria-label="Open sidebar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <section class="preview" id="preview"></section>
+    </main>
+
+    <footer class="appfoot no-print">
+      <a class="vc" href="https://tokori.ai" target="_blank" rel="noopener noreferrer" title="Tokori — slow language learning">
+        <img src="logo.png" alt="Tokori" width="18" height="18" />
+        <span class="label">Vibe coded <span class="by">by<span class="heart">●</span>tokori</span></span>
+      </a>
+      <div class="meta">
+        <a href="https://github.com/tokoriai/zh-sheets" target="_blank" rel="noopener noreferrer">open source</a>
+        <span class="sep print-tip">·</span>
+        <span class="print-tip">print with <kbd>⌘/Ctrl</kbd> + <kbd>P</kbd></span>
+      </div>
+    </footer>
+
+    <script src="data/hsk.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"
+      defer
+      onerror="window.HANZI_WRITER_FAILED = true"
+    ></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

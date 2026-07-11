@@ -1,0 +1,775 @@
+/* ──────────────────────────────────────────────────────────
+   zh-sheets — design system mirrors Tokori (cream paper +
+   warm ink). Same HSL tokens so the visual language matches
+   tokori.app / cloud.tokori.app.
+   ────────────────────────────────────────────────────────── */
+
+:root {
+  --background: 41 48% 89%;
+  --foreground: 30 7% 5%;
+  --card: 38 30% 97%;
+  --card-foreground: 30 7% 5%;
+  --primary: 30 7% 9%;
+  --primary-foreground: 38 30% 98%;
+  --secondary: 35 18% 89%;
+  --secondary-foreground: 30 7% 9%;
+  --muted: 35 18% 89%;
+  --muted-foreground: 33 5% 40%;
+  --accent: 35 18% 89%;
+  --accent-foreground: 30 7% 9%;
+  --border: 35 12% 82%;
+  --input: 35 12% 82%;
+  --ring: 30 7% 5%;
+  --radius: 0.5rem;
+  --brand-blue: 225 92% 38%;
+  --brand-orange: 14 75% 50%;
+  /* Sidebar surface — slightly darker, less saturated than --background
+     so the left rail reads as a distinct surface without going white.
+     Mirrors shadcn's --sidebar pattern. */
+  --sidebar: 36 26% 85%;
+  --sidebar-foreground: 30 7% 9%;
+  --sidebar-border: 35 14% 78%;
+  --sidebar-accent: 36 22% 80%;
+  --sidebar-width: 360px;
+  /* On-screen sheet scale (print resets to 1 below). The sheet is
+     still authored in real mm so PDF output is exact A4. */
+  --sheet-scale: 1.18;
+  /* Warm off-white paper tint — sits naturally on the cream backdrop. */
+  --paper: 42 60% 96%;
+  --paper-grid: #2b2b2b;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── Custom scrollbars ─────────────────────────────────── */
+/* Firefox */
+* { scrollbar-width: thin; scrollbar-color: hsl(30 8% 55% / 0.35) transparent; }
+/* WebKit (Chromium / Safari) */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: hsl(30 8% 50% / 0.30);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+  transition: background-color .15s;
+}
+*::-webkit-scrollbar-thumb:hover { background: hsl(30 8% 35% / 0.55); background-clip: padding-box; }
+*::-webkit-scrollbar-corner { background: transparent; }
+button { font-family: inherit; }
+input, select, textarea { font-family: inherit; color: inherit; }
+
+/* ── Top bar ───────────────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 16px;
+  height: 56px; padding: 0 20px;
+  background: hsl(var(--background) / 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid hsl(var(--border));
+}
+.brand {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  font-weight: 700; font-size: 16px; letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.brand .dot {
+  width: 8px; height: 8px; border-radius: 9999px;
+  background: hsl(var(--brand-orange)); display: inline-block;
+  transform: translateY(-1px);
+}
+.brand .zh {
+  font-family: "Noto Serif SC", "Noto Sans SC", serif;
+  font-weight: 700;
+  color: hsl(var(--brand-orange));
+}
+.brand small {
+  font-weight: 500; color: hsl(var(--muted-foreground)); font-size: 12px;
+}
+
+/* tab switch */
+.tabs { display: inline-flex; gap: 4px; padding: 4px; background: hsl(var(--secondary)); border-radius: 8px; }
+.tabs button {
+  appearance: none; border: 0; background: transparent;
+  padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: hsl(var(--muted-foreground));
+}
+.tabs button.on {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.06);
+}
+
+.spacer { flex: 1; }
+
+/* ── Buttons (shadcn-ish) ──────────────────────────────── */
+.btn {
+  appearance: none; cursor: pointer; border: 1px solid transparent;
+  border-radius: 6px; padding: 8px 14px; font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background-color .15s, border-color .15s, color .15s, opacity .15s, box-shadow .15s;
+  outline: none;
+}
+.btn:focus-visible { box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring) / 0.5); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+.btn-primary:hover:not(:disabled) { background: hsl(var(--primary) / 0.9); }
+.btn-outline { background: hsl(var(--background)); border-color: hsl(var(--border)); color: hsl(var(--foreground)); }
+.btn-outline:hover { background: hsl(var(--accent)); }
+.btn-ghost { background: transparent; color: hsl(var(--foreground)); }
+.btn-ghost:hover { background: hsl(var(--accent)); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-xs { padding: 3px 8px; font-size: 11px; border-radius: 5px; }
+.btn-icon { padding: 8px; text-decoration: none; }
+.btn-icon svg { display: block; }
+
+/* ── Two-pane layout ───────────────────────────────────── */
+.shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  height: calc(100vh - 56px - 40px); /* topbar + appfoot */
+  overflow: hidden;
+  transition: grid-template-columns .28s cubic-bezier(.4, 0, .2, 1);
+}
+.shell[data-collapsed="true"] { grid-template-columns: 0 1fr; }
+
+.controls {
+  position: relative;
+  border-right: 1px solid hsl(var(--sidebar-border));
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: hsl(var(--sidebar));
+  color: hsl(var(--sidebar-foreground));
+  /* No inner padding — sections handle their own spacing so we can put
+     a sticky header at the top edge. */
+}
+.controls-inner {
+  padding: 6px 18px 22px;
+  width: var(--sidebar-width);
+  /* Stops content reflowing while the rail collapses. */
+}
+
+.sidebar-head {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0 10px;
+  background: linear-gradient(to bottom, hsl(var(--sidebar)) 70%, hsl(var(--sidebar) / 0));
+}
+.sidebar-head .title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: hsl(var(--muted-foreground));
+}
+
+/* Collapse toggle — pill button shared between expanded + collapsed states. */
+.collapse-btn {
+  appearance: none; border: 1px solid hsl(var(--sidebar-border));
+  background: hsl(var(--sidebar) / 0.6);
+  width: 26px; height: 26px; border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; color: hsl(var(--muted-foreground));
+  transition: background-color .15s, color .15s, border-color .15s;
+}
+.collapse-btn:hover { background: hsl(var(--sidebar-accent)); color: hsl(var(--foreground)); }
+.collapse-btn svg { transition: transform .25s; }
+.shell[data-collapsed="true"] .collapse-btn svg { transform: rotate(180deg); }
+
+/* Floating "open sidebar" button that appears when collapsed. */
+.controls-peek {
+  position: absolute; top: 14px; left: 14px; z-index: 5;
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  align-items: center; justify-content: center;
+  cursor: pointer; color: hsl(var(--muted-foreground));
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.06);
+  transition: background-color .15s, transform .2s, opacity .2s;
+  display: none;
+}
+.controls-peek:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); transform: translateX(2px); }
+.shell[data-collapsed="true"] .controls-peek { display: inline-flex; }
+
+.preview {
+  position: relative;
+  overflow: auto;
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  /* `safe` keeps the sheet reachable when it's wider than the pane —
+     plain center pushes half of it into unreachable scroll space. */
+  align-items: center;
+  align-items: safe center;
+  gap: 14px;
+  background:
+    radial-gradient(ellipse at top, hsl(30 6% 50% / 0.06) 0%, transparent 55%),
+    hsl(var(--background));
+}
+/* Subtle dotted texture on the preview canvas — same vibe as Tokori's
+   hero plate, faded at the edges so the sheets remain the focal point. */
+.preview::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(hsl(30 7% 40% / 0.10) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse at top, black 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse at top, black 25%, transparent 78%);
+}
+.preview > * { position: relative; }
+
+/* control sections — flat, divider-led (no card chrome) */
+.section { padding: 18px 0 14px; border-top: 1px solid hsl(var(--sidebar-border) / 0.6); }
+.section:first-of-type { border-top: 0; padding-top: 4px; }
+.section h3 {
+  margin: 0 0 12px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--muted-foreground));
+}
+.section h3 .accent { color: hsl(var(--brand-orange)); margin-right: 6px; }
+.sub-label {
+  font-size: 10.5px;
+  color: hsl(var(--muted-foreground));
+  margin: 14px 0 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.row:last-child { margin-bottom: 0; }
+.row label { font-size: 12px; color: hsl(var(--muted-foreground)); min-width: 90px; }
+.row input[type="range"] { flex: 1; }
+.row input[type="number"], .row input[type="text"], .row select {
+  flex: 1;
+  background: hsl(var(--sidebar) / 0.4);
+  border: 1px solid hsl(var(--sidebar-border));
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  min-width: 0;
+  outline: none;
+  transition: border-color .15s, background-color .15s;
+}
+.row input:focus, .row select:focus { border-color: hsl(var(--ring) / 0.4); background: hsl(var(--background)); }
+.row select {
+  padding: 6px 30px 6px 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7164' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+}
+
+/* native range — slim ink track */
+.row input[type="range"] {
+  appearance: none; -webkit-appearance: none;
+  background: transparent;
+  height: 22px;
+}
+.row input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px; background: hsl(var(--sidebar-border)); border-radius: 2px;
+}
+.row input[type="range"]::-moz-range-track {
+  height: 3px; background: hsl(var(--sidebar-border)); border-radius: 2px;
+}
+.row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: hsl(var(--primary));
+  margin-top: -5.5px;
+  border: 2px solid hsl(var(--sidebar));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.25);
+}
+.row input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: hsl(var(--primary));
+  border: 2px solid hsl(var(--sidebar));
+}
+.row .val { font-variant-numeric: tabular-nums; font-size: 12px; color: hsl(var(--muted-foreground)); min-width: 36px; text-align: right; }
+
+textarea.chars {
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+  background: hsl(var(--sidebar) / 0.4);
+  border: 1px solid hsl(var(--sidebar-border));
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: "Noto Sans SC", "Inter", sans-serif;
+  outline: none;
+  transition: border-color .15s, background-color .15s;
+}
+textarea.chars:focus { border-color: hsl(var(--ring) / 0.4); background: hsl(var(--background)); }
+
+/* chip row */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 6px 4px 10px;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--sidebar-border));
+  border-radius: 999px;
+  font-size: 13px;
+  font-family: "Noto Sans SC", "Inter", sans-serif;
+  line-height: 1;
+  transition: background-color .15s;
+}
+.chip:hover { background: hsl(var(--card)); }
+.chip .x {
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; border-radius: 50%;
+  cursor: pointer; color: hsl(var(--muted-foreground)); font-size: 14px;
+  padding: 0;
+}
+.chip .x:hover { background: hsl(var(--sidebar-accent)); color: hsl(var(--foreground)); }
+.chip-empty {
+  font-size: 12px; color: hsl(var(--muted-foreground));
+  padding: 16px 14px;
+  border: 1px dashed hsl(var(--sidebar-border));
+  border-radius: var(--radius);
+  text-align: center;
+  width: 100%;
+}
+
+.hsk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+.hsk-grid .btn { justify-content: center; padding: 6px 0; }
+.hsk-btn {
+  appearance: none; cursor: pointer;
+  border: 1px solid hsl(var(--sidebar-border));
+  background: hsl(var(--sidebar) / 0.4);
+  color: hsl(var(--foreground));
+  border-radius: 6px;
+  padding: 7px 0; font-size: 12px; font-weight: 500;
+  transition: background-color .15s, border-color .15s;
+}
+.hsk-btn:hover { background: hsl(var(--background)); border-color: hsl(var(--border)); }
+.hsk-btn .lvl { font-weight: 700; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; }
+.toggle-row label { font-size: 13px; color: hsl(var(--foreground)); }
+.toggle-row .sub { font-size: 11px; color: hsl(var(--muted-foreground)); margin-top: 2px; }
+
+.switch { position: relative; width: 34px; height: 20px; flex: 0 0 auto; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch span {
+  position: absolute; inset: 0; cursor: pointer;
+  background: hsl(var(--border)); border-radius: 999px;
+  transition: background-color .15s;
+}
+.switch span::before {
+  content: ""; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px;
+  background: hsl(var(--card)); border-radius: 50%;
+  transition: transform .15s; box-shadow: 0 1px 2px hsl(var(--foreground) / 0.2);
+}
+.switch input:checked + span { background: hsl(var(--primary)); }
+.switch input:checked + span::before { transform: translateX(14px); background: hsl(var(--primary-foreground)); }
+
+.seg {
+  display: inline-flex; padding: 3px;
+  background: hsl(var(--sidebar) / 0.5);
+  border: 1px solid hsl(var(--sidebar-border));
+  border-radius: 8px; gap: 2px;
+}
+.seg button {
+  border: 0; background: transparent; padding: 5px 10px; border-radius: 5px;
+  font-size: 13px; color: hsl(var(--muted-foreground)); cursor: pointer;
+  font-family: "Noto Serif SC", "Inter", serif;
+  min-width: 32px;
+  transition: background-color .15s, color .15s;
+}
+.seg button:hover:not(.on) { color: hsl(var(--foreground)); }
+.seg button.on {
+  background: hsl(var(--card)); color: hsl(var(--foreground));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.06);
+}
+
+/* ── App footer (subtle Tokori credit, always visible) ─── */
+.appfoot {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+  background: hsl(var(--sidebar) / 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid hsl(var(--sidebar-border));
+  font-size: 11.5px;
+  color: hsl(var(--muted-foreground));
+}
+.appfoot .vc {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: inherit;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color .15s, color .15s;
+}
+.appfoot .vc:hover { background: hsl(var(--sidebar-accent) / 0.6); color: hsl(var(--foreground)); }
+.appfoot .vc img {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  opacity: 0.9;
+}
+.appfoot .vc .label {
+  letter-spacing: 0.02em;
+}
+.appfoot .vc .by {
+  font-weight: 600; color: hsl(var(--foreground));
+}
+.appfoot .vc .heart {
+  display: inline-block;
+  color: hsl(var(--brand-orange));
+  margin: 0 1px;
+}
+.appfoot .meta {
+  font-size: 11px;
+  color: hsl(var(--muted-foreground) / 0.85);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.appfoot .meta .sep { opacity: 0.4; }
+.appfoot .meta a {
+  color: inherit; text-decoration: none;
+  border-bottom: 1px dotted hsl(var(--muted-foreground) / 0.5);
+  transition: color .15s, border-color .15s;
+}
+.appfoot .meta a:hover { color: hsl(var(--foreground)); border-color: hsl(var(--foreground) / 0.5); }
+.appfoot .meta kbd {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  padding: 1px 5px;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--sidebar-border));
+  border-radius: 4px;
+}
+
+/* ── Sheet (preview + print) ───────────────────────────── */
+.sheet-meta {
+  width: 210mm; max-width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  color: hsl(var(--muted-foreground)); font-size: 12px;
+  padding: 8px 2px;
+}
+.sheet-meta strong { color: hsl(var(--foreground)); font-weight: 600; }
+.sheet-meta .pill {
+  padding: 3px 10px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.sheet-meta .pill-dot::before {
+  content: ""; display: inline-block; vertical-align: middle;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: hsl(var(--brand-orange)); margin-right: 7px;
+}
+
+.sheet {
+  width: 210mm;
+  min-height: 297mm;
+  /* The sheet is authored in true mm (print resets --sheet-scale to 1).
+     `zoom` magnifies the whole page — grids and glyphs included — so the
+     on-screen preview is an exact WYSIWYG of the printed A4 page.
+     (Previously only the outer box was scaled, which made the paper 18%
+     too wide for its content.) */
+  zoom: var(--sheet-scale);
+  background: hsl(var(--paper));
+  box-shadow:
+    0 30px 70px -22px hsl(30 12% 14% / 0.22),
+    0 6px 16px -6px hsl(30 12% 14% / 0.10);
+  border-radius: 6px;
+  padding: 18mm 16mm;
+  color: #111;
+  position: relative;
+}
+.sheet + .sheet { margin-top: 22px; }
+.sheet-meta { width: calc(210mm * var(--sheet-scale)); }
+
+/* On-screen: footer link is rendered into the DOM so PDFs pick it up
+   as a clickable hyperlink, but it shouldn't clutter the preview. */
+.sheet-foot { display: none; }
+
+.grid {
+  display: grid;
+  gap: 0;
+  border-top: 0.4mm solid #2a2520;
+  border-left: 0.4mm solid #2a2520;
+  /* Ensure the grid borders + SVG guides render at print time. */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  page-break-inside: avoid;
+}
+.cell {
+  position: relative;
+  border-right: 0.3mm solid #2a2520;
+  border-bottom: 0.3mm solid #2a2520;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  overflow: hidden;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.cell .glyph {
+  line-height: 1;
+  /* font-size & font-family set inline per-character via style */
+}
+.cell.ghost .glyph { color: #c9c2b3; }
+.cell.solid .glyph { color: #1a1a1a; }
+.cell.empty { }
+
+/* layout guides — drawn as background SVGs so the glyph stays on top */
+.cell.l-mi {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><g stroke='%23d9d2c2' stroke-width='0.6' stroke-dasharray='2 2' fill='none'><line x1='0' y1='50' x2='100' y2='50'/><line x1='50' y1='0' x2='50' y2='100'/></g><g stroke='%23e3dccc' stroke-width='0.6' stroke-dasharray='2 2' fill='none'><line x1='0' y1='0' x2='100' y2='100'/><line x1='100' y1='0' x2='0' y2='100'/></g></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.cell.l-tian {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><g stroke='%23d9d2c2' stroke-width='0.6' stroke-dasharray='2 2' fill='none'><line x1='0' y1='50' x2='100' y2='50'/><line x1='50' y1='0' x2='50' y2='100'/></g></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.cell.l-hui {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><rect x='14' y='14' width='72' height='72' fill='none' stroke='%23d9d2c2' stroke-width='0.6' stroke-dasharray='2 2'/></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.cell.l-blank { /* no inner guides */ }
+
+.cell .pinyin {
+  position: absolute; top: 1px; left: 0; right: 0;
+  text-align: center; font-size: 9px; color: #b5ad9d;
+  letter-spacing: 0.02em;
+}
+.cell .stroke-num {
+  position: absolute; bottom: 2px; right: 4px;
+  font-size: 9px; color: #b5ad9d;
+  font-variant-numeric: tabular-nums;
+}
+
+/* row label (pinyin + gloss + optional stroke strip — all one line) */
+.row-label {
+  display: flex; gap: 12px; align-items: center;
+  font-size: 10.5px; color: #5a5450; padding: 2mm 0 1mm;
+  flex-wrap: wrap;
+  page-break-after: avoid; /* never split label from its grid row */
+}
+.row-label .py { font-weight: 600; color: #2b2b2b; }
+.row-label .gl { color: #888; }
+.row-strokes-inline {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-left: auto; /* push to the right edge so it doesn't fight the meaning text */
+}
+.row-strokes-sep {
+  display: inline-block; width: 6px;
+}
+.row-strokes-inline-label {
+  margin-left: auto;
+  font-family: "Noto Serif SC", serif;
+  font-size: 14px;
+  color: #2b2b2b;
+}
+
+/* practice mode panel — no white surface; sits on the page itself */
+.practice-wrap {
+  width: 100%; max-width: 720px;
+  display: flex; flex-direction: column; gap: 18px;
+  margin-top: 8px;
+}
+.practice-card {
+  background: transparent;
+  border: 0;
+  padding: 12px 0 0;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.practice-card .pinyin-big {
+  font-size: 15px; color: hsl(var(--muted-foreground)); letter-spacing: 0.04em;
+  font-variant: small-caps;
+}
+.practice-card .gloss-big { font-size: 13px; color: hsl(var(--muted-foreground)); text-align: center; max-width: 90%; }
+/* stage is a faint dashed square — feels like an exercise box, not a card */
+.practice-stage {
+  position: relative;
+  width: 360px; height: 360px;
+  border: 1.5px dashed hsl(var(--sidebar-border));
+  border-radius: 12px;
+  background: transparent;
+}
+.practice-stage svg { display: block; width: 100%; height: 100%; background: transparent; border-radius: 12px; }
+.practice-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.practice-list { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.practice-list button {
+  font-family: "Noto Sans SC", sans-serif; font-size: 18px;
+  width: 40px; height: 40px; border-radius: 8px;
+  border: 1px solid hsl(var(--sidebar-border));
+  background: hsl(var(--sidebar) / 0.4);
+  cursor: pointer; color: hsl(var(--foreground));
+  transition: background-color .15s, border-color .15s;
+}
+.practice-list button:hover { background: hsl(var(--sidebar-accent)); }
+.practice-list button.on { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
+.practice-empty { color: hsl(var(--muted-foreground)); text-align: center; padding: 40px 0; }
+
+/* ── Stroke-order strips ───────────────────────────────── */
+.row-strokes {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 1.5mm 0 0.5mm;
+}
+.stroke-strip { display: inline-flex; flex-wrap: wrap; gap: 2px; align-items: center; }
+.stroke-strip .stroke-svg {
+  background: hsl(var(--paper));
+  border: 1px solid #d9d2c2;
+  border-radius: 2px;
+}
+.stroke-strip-loading {
+  display: inline-block; width: 16px; height: 16px;
+  border: 1px dashed #d9d2c2; border-radius: 2px;
+  background: hsl(var(--paper));
+}
+.stroke-strip-missing { font-size: 10px; color: #b5ad9d; padding: 0 4px; }
+
+/* Stroke-only reference sheet — character blocks with big grid cells
+   that show stroke progression inside the writing-cell guides. */
+.stroke-block {
+  margin-bottom: 6mm;
+  page-break-inside: avoid; /* keep one character's grid on one page */
+}
+.stroke-block:last-child { margin-bottom: 0; }
+.stroke-loading {
+  font-size: 11px; color: #b5ad9d; padding: 4mm 2mm;
+  border: 1px dashed #d9d2c2; border-radius: 4px;
+}
+.stroke-grid { /* inherits .grid base styles, plus auto-rows from inline style */ }
+.cell.stroke-cell { position: relative; }
+.cell.stroke-cell .stroke-cell-svg {
+  position: absolute; inset: 6%;
+  width: 88%; height: 88%;
+  pointer-events: none;
+}
+.cell.stroke-cell .stroke-step-num {
+  position: absolute; top: 1.5%; left: 2%;
+  font-size: 9px; color: #b5ad9d;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* ── Small screens ─────────────────────────────────────── */
+/* The sidebar becomes an overlay drawer; the preview keeps the full
+   width and pans horizontally over the A4 sheet. */
+@media (max-width: 900px) {
+  :root { --sheet-scale: 1; }
+  .brand small { display: none; }
+  /* The drawer is out of flow here, so the preview is the only grid
+     item — a single full-width track (the selector list also outranks
+     the desktop [data-collapsed] rule). */
+  .shell,
+  .shell[data-collapsed="true"] { grid-template-columns: 1fr; }
+  .controls {
+    position: absolute; top: 0; bottom: 0; left: 0; z-index: 15;
+    width: min(var(--sidebar-width), 88vw);
+    border-right: 1px solid hsl(var(--sidebar-border));
+    box-shadow: 24px 0 60px -30px hsl(30 12% 14% / 0.45);
+    transform: translateX(0);
+    transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+  }
+  .shell[data-collapsed="true"] .controls { transform: translateX(-105%); box-shadow: none; }
+  .controls-inner { width: 100%; }
+  .preview { padding: 18px 14px 40px; align-items: flex-start; }
+  .sheet-meta { flex-wrap: wrap; gap: 6px; }
+}
+@media (max-width: 560px) {
+  .topbar { padding: 0 12px; gap: 10px; }
+  .btn-label { display: none; }        /* print button collapses to its icon */
+  .topbar .btn-icon { display: none; } /* GitHub link stays in the footer */
+  .topbar .btn { padding: 8px 10px; }
+  .print-tip { display: none; }
+  .appfoot { padding: 0 12px; }
+}
+
+/* ── Print ─────────────────────────────────────────────── */
+@page { size: A4; margin: 0; }
+@media print {
+  /* Reset on-screen scale; keep the warm paper tint so the brand
+     identity carries into the PDF instead of going generic-white. */
+  :root { --sheet-scale: 1; }
+
+  /* Force every backgrounded element to actually render at print
+     time. Without this, browsers strip backgrounds + SVG guides to
+     save toner and the worksheet prints as just borders. */
+  html, body, * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body { background: hsl(var(--paper)); }
+  .topbar, .controls, .sheet-meta, .sheet-head, .appfoot, .no-print { display: none !important; }
+  .shell { display: block; height: auto; overflow: visible; }
+  .preview { padding: 0; background: hsl(var(--paper)); display: block; overflow: visible; }
+  .preview::before { display: none; }
+
+  .sheet {
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+    page-break-after: always;
+    page-break-inside: avoid;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 18mm 16mm 22mm;
+    background: hsl(var(--paper));
+    position: relative;
+  }
+  .sheet:last-child { page-break-after: auto; }
+
+  /* Subtle brand line at the bottom of every printed page. Rendered
+     as a real <a> in the DOM (see buildSheetFooter) so PDF readers
+     keep it as a clickable annotation. Hidden on screen via the
+     screen-side rules below; toggled off entirely by .no-print-footer
+     on <body>. */
+  .sheet-foot {
+    display: block !important;
+    position: absolute;
+    left: 16mm; right: 16mm; bottom: 10mm;
+    text-align: right;
+    font-family: "Inter", sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: hsl(33 8% 55%);
+    text-decoration: none;
+  }
+  body.no-print-footer .sheet-foot { display: none !important; }
+
+  /* Page-break hints so writing rows + their labels stay together
+     and a single character's stroke grid never splits across pages. */
+  .row-label,
+  .row-label + .grid,
+  .stroke-block,
+  .stroke-block .grid {
+    page-break-inside: avoid;
+  }
+
+  /* Slightly more breathable label sizing for printed text. */
+  .row-label { font-size: 11px; padding: 2.5mm 0 1.5mm; }
+  .row-label .py { font-size: 11.5px; }
+  .row-label .gl { font-size: 10px; }
+
+  /* Stroke-order strips look great on paper at print resolution;
+     keep the warm paper tint behind each tile. */
+  .stroke-strip .stroke-svg,
+  .stroke-strip-loading { background: hsl(var(--paper)); }
+
+  /* Brand-orange "current stroke" highlight in strokes mode needs
+     the color-adjust override above to print as the warm orange
+     instead of going gray. (No extra rule needed.) */
+}

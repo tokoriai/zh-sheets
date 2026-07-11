@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+cedict*.txt
+cedict*.txt.gz
